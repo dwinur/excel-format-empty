@@ -205,7 +205,8 @@ class PDFDataExtractor:
             
             # Try to identify composition table by headers
             header_row = table[0]
-            header_text = ' '.join([str(cell).lower() if cell else '' for cell in header_row])
+            header_cells = [str(cell).lower() if cell else '' for cell in header_row]
+            header_text = ' '.join(header_cells)
             
             if any(keyword in header_text for keyword in ['component', 'composition', 'mole', 'fraction']):
                 logger.info("Found composition table")
@@ -302,7 +303,8 @@ class PDFDataExtractor:
                 continue
             
             header_row = table[0]
-            header_text = ' '.join([str(cell).lower() if cell else '' for cell in header_row])
+            header_cells = [str(cell).lower() if cell else '' for cell in header_row]
+            header_text = ' '.join(header_cells)
             
             # Check if this is a CVD data table
             if any(keyword in header_text for keyword in ['stage', 'pressure', 'volume', 'cvd']):

@@ -13,11 +13,7 @@ import requests
 from urllib.parse import urlparse
 
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
+# Get logger - configuration is done in main script
 logger = logging.getLogger(__name__)
 
 
@@ -267,7 +263,7 @@ def create_summary_report(data: Dict[str, Any], output_path: Union[str, Path]) -
     output_path = Path(output_path)
     
     try:
-        with open(output_path, 'w') as f:
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write("PDF to Excel Data Extraction Summary\n")
             f.write("=" * 80 + "\n\n")
             

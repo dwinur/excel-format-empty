@@ -264,7 +264,7 @@ def main():
             
             # Save validation report
             report_path = dirs['logs'] / f"validation_{args.sample}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
-            with open(report_path, 'w') as f:
+            with open(report_path, 'w', encoding='utf-8') as f:
                 f.write(report)
             logger.info(f"Validation report saved: {report_path}")
             
@@ -291,7 +291,7 @@ def main():
         }
         
         summary_path = dirs['logs'] / f"summary_{args.sample}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(summary_path, 'w') as f:
+        with open(summary_path, 'w', encoding='utf-8') as f:
             json.dump(summary, f, indent=2)
         
         logger.info(f"Summary saved: {summary_path}")

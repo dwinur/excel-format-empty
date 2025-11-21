@@ -28,9 +28,11 @@ def safe_write_cell(ws: Worksheet, cell_ref: str, value: Any) -> bool:
         True if successful, False otherwise
     """
     try:
+        from openpyxl.cell.cell import MergedCell
+        
         cell = ws[cell_ref]
         # Check if it's a merged cell
-        if hasattr(cell, '__class__') and cell.__class__.__name__ == 'MergedCell':
+        if isinstance(cell, MergedCell):
             # Find the top-left cell of the merged range
             for merged_range in ws.merged_cells.ranges:
                 if cell.coordinate in merged_range:
@@ -329,7 +331,7 @@ def load_mapping_config(config_path: Path, template_name: str) -> Dict[str, Any]
     Returns:
         Mapping configuration dictionary
     """
-    with open(config_path, 'r') as f:
+    with open(config_path, 'r', encoding='utf-8') as f:
         all_configs = json.load(f)
     
     if template_name not in all_configs:
