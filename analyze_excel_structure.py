@@ -16,7 +16,6 @@ import os
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 from openpyxl import load_workbook
-from openpyxl.styles import Font, PatternFill
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils import get_column_letter
 

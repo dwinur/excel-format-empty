@@ -24,7 +24,6 @@ The analyzer extracts comprehensive information about each Excel file:
 
 - Python 3.7 or higher
 - openpyxl library
-- pandas library (optional, but included)
 
 ## Installation
 
@@ -38,7 +37,7 @@ pip install -r requirements.txt
 Or install manually:
 
 ```bash
-pip install openpyxl pandas
+pip install openpyxl
 ```
 
 ## Usage
