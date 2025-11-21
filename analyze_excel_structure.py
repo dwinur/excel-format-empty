@@ -21,6 +21,21 @@ from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.utils import get_column_letter
 
 
+# Constants
+MAX_HEADER_CELLS_DISPLAY = 10
+MAX_CELL_VALUE_LENGTH = 30
+
+
+def convert_rgb_to_string(color_obj) -> Optional[str]:
+    """Helper function to safely convert RGB color objects to string."""
+    try:
+        if color_obj and hasattr(color_obj, 'rgb'):
+            return str(color_obj.rgb) if color_obj.rgb else None
+    except Exception:
+        pass
+    return None
+
+
 def analyze_cell_formatting(cell) -> Dict[str, Any]:
     """Extract formatting information from a cell."""
     formatting = {}
@@ -30,27 +45,11 @@ def analyze_cell_formatting(cell) -> Dict[str, Any]:
         formatting['bold'] = cell.font.bold
         formatting['italic'] = cell.font.italic
         formatting['font_size'] = cell.font.size
-        # Convert RGB color to string - handle different types
-        try:
-            if cell.font.color and hasattr(cell.font.color, 'rgb'):
-                rgb_val = cell.font.color.rgb
-                formatting['font_color'] = str(rgb_val) if rgb_val is not None else None
-            else:
-                formatting['font_color'] = None
-        except Exception:
-            formatting['font_color'] = None
+        formatting['font_color'] = convert_rgb_to_string(cell.font.color)
     
     # Fill/background color
     if cell.fill and cell.fill.patternType:
-        # Convert RGB color to string - handle different types
-        try:
-            if hasattr(cell.fill.fgColor, 'rgb'):
-                rgb_val = cell.fill.fgColor.rgb
-                formatting['fill_color'] = str(rgb_val) if rgb_val is not None else None
-            else:
-                formatting['fill_color'] = None
-        except Exception:
-            formatting['fill_color'] = None
+        formatting['fill_color'] = convert_rgb_to_string(cell.fill.fgColor)
         formatting['pattern_type'] = cell.fill.patternType
     
     # Alignment
@@ -182,8 +181,8 @@ def analyze_sheet(sheet: Worksheet) -> Dict[str, Any]:
         'cell_patterns': analyze_cell_patterns(sheet),
         'sheet_state': sheet.sheet_state,
         'sheet_view': {
-            'show_gridlines': sheet.sheet_view.showGridLines if hasattr(sheet.sheet_view, 'showGridLines') else None,
-            'tab_selected': sheet.sheet_view.tabSelected if hasattr(sheet.sheet_view, 'tabSelected') else None
+            'show_gridlines': getattr(sheet.sheet_view, 'showGridLines', None),
+            'tab_selected': getattr(sheet.sheet_view, 'tabSelected', None)
         }
     }
     
@@ -303,8 +302,8 @@ def print_summary(analysis: Dict[str, Any]):
                 non_empty_cells = [c for c in header_row['cells'] if c['value'] is not None]
                 if non_empty_cells:
                     print(f"    Row {row_num}:")
-                    for cell in non_empty_cells[:10]:  # Show first 10 cells
-                        value_str = str(cell['value'])[:30]  # Truncate long values
+                    for cell in non_empty_cells[:MAX_HEADER_CELLS_DISPLAY]:
+                        value_str = str(cell['value'])[:MAX_CELL_VALUE_LENGTH]
                         print(f"      {cell['column']}: {value_str}")
     
     print("\n" + "="*80 + "\n")
