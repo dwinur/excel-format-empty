@@ -10,6 +10,7 @@ from typing import Dict, List, Any, Optional, Union
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.styles import Font, Alignment, Border, PatternFill
+from openpyxl.cell.cell import MergedCell
 import json
 
 from utils import format_cell_value, logger
@@ -28,7 +29,6 @@ def safe_write_cell(ws: Worksheet, cell_ref: str, value: Any) -> bool:
         True if successful, False otherwise
     """
     try:
-        from openpyxl.cell.cell import MergedCell
         
         cell = ws[cell_ref]
         # Check if it's a merged cell
