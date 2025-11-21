@@ -1,0 +1,90 @@
+{
+  "WF-Gas-Condensate-REC-Sample (CL-63169).xlsx": {
+    "general_info": {
+      "sheet": "General Info",
+      "mappings": {
+        "sample_name": "C11",
+        "sample_type": "C13",
+        "sample_date": "C15",
+        "well_name": "C17",
+        "reservoir": "C19",
+        "field_name": "C19",
+        "depth": "H11",
+        "temperature": "C23",
+        "pressure": "C25"
+      }
+    },
+    "compositional_data": {
+      "sheet": "Compositional Data",
+      "recombined_fluid": {
+        "start_row": 8,
+        "start_col": "B",
+        "columns": {
+          "component": "B",
+          "molecular_weight": "C",
+          "mole_fraction": "D",
+          "mass_fraction": "E"
+        }
+      },
+      "flashed_gas": {
+        "start_row": 8,
+        "start_col": "G",
+        "columns": {
+          "component": "G",
+          "molecular_weight": "H",
+          "mole_fraction": "I",
+          "mass_fraction": "J"
+        }
+      },
+      "metadata": {
+        "fluid_molecular_weight": "D3",
+        "recombination_gor": "D4",
+        "reported_contamination": "D5",
+        "gas_specific_gravity": "I4",
+        "flash_temperature": "I5"
+      }
+    },
+    "cce_experimental_data": {
+      "sheet": "CCE Experimental Data",
+      "experiment_info": {
+        "saturation_pressure_type": "D4",
+        "saturation_pressure": "D5",
+        "temperature": "D6"
+      },
+      "data_table": {
+        "start_row": 7,
+        "columns": {
+          "stage": "H",
+          "pressure": "I",
+          "relative_volume": "J",
+          "y_function": "K",
+          "liquid_dropout": "L",
+          "z_factor": "M"
+        }
+      }
+    },
+    "cvd_experimental_data": {
+      "sheet": "CVD Experimental Data",
+      "experiment_info": {
+        "saturation_pressure_type": "D5",
+        "saturation_pressure": "D6",
+        "temperature": "D7",
+        "avg_oil_molecular_weight": "D10",
+        "stock_tank_oil_density": "D11"
+      },
+      "data_table": {
+        "start_row": 7,
+        "columns": {
+          "stage": "H",
+          "pressure": "I",
+          "relative_oil_volume": "J",
+          "cumulative_recovery": "K",
+          "compressibility_factor": "L",
+          "gas_deviation_factor": "M",
+          "gas_fvf": "N",
+          "gas_viscosity": "O"
+        }
+      }
+    }
+  }
+}
