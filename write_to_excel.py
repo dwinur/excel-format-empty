@@ -15,6 +15,41 @@ import json
 from utils import format_cell_value, logger
 
 
+def safe_write_cell(ws: Worksheet, cell_ref: str, value: Any) -> bool:
+    """
+    Safely write to a cell, handling merged cells.
+    
+    Args:
+        ws: Worksheet object
+        cell_ref: Cell reference (e.g., 'A1')
+        value: Value to write
+        
+    Returns:
+        True if successful, False otherwise
+    """
+    try:
+        cell = ws[cell_ref]
+        # Check if it's a merged cell
+        if hasattr(cell, '__class__') and cell.__class__.__name__ == 'MergedCell':
+            # Find the top-left cell of the merged range
+            for merged_range in ws.merged_cells.ranges:
+                if cell.coordinate in merged_range:
+                    # Get the top-left cell
+                    top_left = merged_range.start_cell
+                    ws[top_left.coordinate] = value
+                    logger.debug(f"  Wrote to merged cell top-left: {top_left.coordinate}")
+                    return True
+            logger.warning(f"Could not find merge range for {cell_ref}")
+            return False
+        else:
+            # Normal cell
+            ws[cell_ref] = value
+            return True
+    except Exception as e:
+        logger.error(f"Error writing to cell {cell_ref}: {str(e)}")
+        return False
+
+
 class ExcelWriter:
     """Writes data to Excel templates while preserving formatting."""
     
@@ -74,8 +109,8 @@ class ExcelWriter:
         for field, cell_ref in mappings.items():
             if field in data and data[field] is not None:
                 value = format_cell_value(data[field])
-                ws[cell_ref] = value
-                logger.debug(f"  {field} -> {cell_ref}: {value}")
+                if safe_write_cell(ws, cell_ref, value):
+                    logger.debug(f"  {field} -> {cell_ref}: {value}")
     
     def write_compositional_data(self, data: List[Dict[str, Any]]) -> None:
         """
@@ -108,15 +143,15 @@ class ExcelWriter:
                 row = start_row + i
                 
                 if 'name' in component and 'component' in columns:
-                    ws[f"{columns['component']}{row}"] = component['name']
+                    safe_write_cell(ws, f"{columns['component']}{row}", component['name'])
                 
                 if 'mole_fraction' in component and 'mole_fraction' in columns:
                     value = format_cell_value(component['mole_fraction'], 'number')
-                    ws[f"{columns['mole_fraction']}{row}"] = value
+                    safe_write_cell(ws, f"{columns['mole_fraction']}{row}", value)
                 
                 if 'mass_fraction' in component and 'mass_fraction' in columns:
                     value = format_cell_value(component['mass_fraction'], 'number')
-                    ws[f"{columns['mass_fraction']}{row}"] = value
+                    safe_write_cell(ws, f"{columns['mass_fraction']}{row}", value)
             
             logger.info(f"  Wrote {len(data)} components to recombined fluid section")
     
@@ -147,11 +182,11 @@ class ExcelWriter:
             
             if 'saturation_pressure' in data and 'saturation_pressure' in exp_info:
                 value = format_cell_value(data['saturation_pressure'], 'number')
-                ws[exp_info['saturation_pressure']] = value
+                safe_write_cell(ws, exp_info['saturation_pressure'], value)
             
             if 'experiment_temperature' in data and 'temperature' in exp_info:
                 value = format_cell_value(data['experiment_temperature'], 'number')
-                ws[exp_info['temperature']] = value
+                safe_write_cell(ws, exp_info['temperature'], value)
     
     def write_cvd_experimental_data(self, data: List[Dict[str, Any]], 
                                    experiment_info: Dict[str, Any] = None) -> None:
@@ -182,11 +217,11 @@ class ExcelWriter:
             
             if 'saturation_pressure' in experiment_info and 'saturation_pressure' in exp_info:
                 value = format_cell_value(experiment_info['saturation_pressure'], 'number')
-                ws[exp_info['saturation_pressure']] = value
+                safe_write_cell(ws, exp_info['saturation_pressure'], value)
             
             if 'experiment_temperature' in experiment_info and 'temperature' in exp_info:
                 value = format_cell_value(experiment_info['experiment_temperature'], 'number')
-                ws[exp_info['temperature']] = value
+                safe_write_cell(ws, exp_info['temperature'], value)
         
         # Write CVD stage data
         if 'data_table' in config and data:
@@ -199,15 +234,15 @@ class ExcelWriter:
                 
                 if 'stage' in stage_data and 'stage' in columns:
                     value = format_cell_value(stage_data['stage'], 'number')
-                    ws[f"{columns['stage']}{row}"] = value
+                    safe_write_cell(ws, f"{columns['stage']}{row}", value)
                 
                 if 'pressure' in stage_data and 'pressure' in columns:
                     value = format_cell_value(stage_data['pressure'], 'number')
-                    ws[f"{columns['pressure']}{row}"] = value
+                    safe_write_cell(ws, f"{columns['pressure']}{row}", value)
                 
                 if 'relative_volume' in stage_data and 'relative_oil_volume' in columns:
                     value = format_cell_value(stage_data['relative_volume'], 'number')
-                    ws[f"{columns['relative_oil_volume']}{row}"] = value
+                    safe_write_cell(ws, f"{columns['relative_oil_volume']}{row}", value)
             
             logger.info(f"  Wrote {len(data)} CVD stages")
     

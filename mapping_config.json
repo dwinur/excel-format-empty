@@ -3,15 +3,15 @@
     "general_info": {
       "sheet": "General Info",
       "mappings": {
-        "sample_name": "C11",
-        "sample_type": "C13",
-        "sample_date": "C15",
-        "well_name": "C17",
-        "reservoir": "C19",
-        "field_name": "C19",
-        "depth": "H11",
-        "temperature": "C23",
-        "pressure": "C25"
+        "sample_name": "B11",
+        "sample_type": "B13",
+        "sample_date": "B15",
+        "well_name": "B17",
+        "reservoir": "B19",
+        "field_name": "B19",
+        "depth": "G11",
+        "temperature": "B23",
+        "pressure": "B25"
       }
     },
     "compositional_data": {

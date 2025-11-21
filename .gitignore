@@ -44,6 +44,9 @@ logs/
 temp/
 *.log
 
+# Test files
+test_*.py
+
 # Jupyter Notebook
 .ipynb_checkpoints
 
